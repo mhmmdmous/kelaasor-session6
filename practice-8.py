@@ -1,69 +1,59 @@
-class Teacher:
-    def __init__(self, name):
-        self.__name = name
+class Hospital:  
+    def __init__(self, name, address):  
+        self.name = name  
+        self.address = address  
+        self.doctors_list = []  
 
-    def set_name_teacher(self, name):
-        self.__name = name
+    def set_doctors_in_hospital(self, doctor: 'Doctor'):  
+        self.doctors_list.append(doctor)  
 
-    def get_name_teacher(self):
-        return self.__name
+    def remove_doctors_in_hospital(self, doctor: 'Doctor'):  
+        if doctor in self.doctors_list:  
+            self.doctors_list.remove(doctor)  
 
-
-class Student:
-    def __init__(self, name):
-        self.__name = name
-        self.__grade_list = []
-
-    def set_name_student(self, name):
-        self.__name = name
-
-    def get_name_student(self):
-        return self.__name
+    def get_doctors(self):  
+        return self.doctors_list  
     
-    def set_grade_student(self, grade: int):
-        self.__grade_list.append(grade)
-    
-    def get_avrg(self):
-        if len(self.__grade_list) > 0:
-            return sum(self.__grade_list) / len(self.__grade_list)
-        return 0  
-
-
-class Subject:
-    def __init__(self, name, teacher: Teacher):
-        self.name = name
-        self.teacher = teacher  
-        self.students_list = []  
-
-    def add_student(self, student: Student):
-        self.students_list.append(student)
-
-    def grading(self):
-        for student in self.students_list:
-           
-            grade = int(input(f"Please input grade of {student.get_name_student()} for subject {self.name}: "))
-            student.set_grade_student(grade)
-    
-    def show_students_info(self):
+    def check_doctors(self, doctor):  
+        return doctor in self.doctors_list  
         
-        student_list_in_subject = sorted(self.students_list, key=lambda student: student.get_avrg(), reverse=True)
-        
-        for student in student_list_in_subject:
-            print(f"{student.get_name_student()}: {student.get_avrg()}")
+    def get_doctors_in_degree(self, degree):  
+        return [doctor for doctor in self.doctors_list if doctor.degree == degree]  
+
+    def get_doctors_in_doctorate(self, doctorate):  
+        return [doctor for doctor in self.doctors_list if doctor.doctorate == doctorate]  
 
 
-# Testing the functionality
-teacher = Teacher("ali")
-subject = Subject("Math", teacher)
+class Doctor:  
+    def __init__(self, name, degree, doctorate):  
+        self.name = name  
+        self.doctorate = doctorate  
+        self.degree = degree  
+        self.hospitals_list = []  
 
-# Adding students
-student1 = Student("reza")
-student2 = Student("amir")
-subject.add_student(student1)
-subject.add_student(student2)
+    def set_hospital(self, hospital: 'Hospital'):  
+        self.hospitals_list.append(hospital)  
+        hospital.set_doctors_in_hospital(self)  
 
-# Grading students
-subject.grading()
+    def remove_hospital(self, hospital: 'Hospital'):  
+        if hospital in self.hospitals_list:  
+            self.hospitals_list.remove(hospital)  
+            hospital.remove_doctors_in_hospital(self)  
 
-# Showing student info sorted by average grade
-subject.show_students_info()
+    def get_hospitals(self):  
+        return self.hospitals_list
+    
+# ایجاد یک بیمارستان و دو پزشک  
+hospital_1 = Hospital("Bahman Hospital", "iranzamin street")  
+doctor1 = Doctor("Dr ali", "omoomi", "doctorian omoomi")  
+doctor2 = Doctor("dr sara", "surgeao", "doctorian surgeon")  
+
+# افزودن پزشکان به بیمارستان  
+doctor1.set_hospital(hospital_1)  
+doctor2.set_hospital(hospital_1)  
+
+# دریافت و چاپ پزشکان بیمارستان  
+doctors_in_hospital = hospital_1.get_doctors()  
+print(f"doctors in {hospital_1.name}")  
+for doctor in doctors_in_hospital:  
+    print(f"name: {doctor.name}, degree: {doctor.degree}, doctorian: {doctor.doctorate}")
